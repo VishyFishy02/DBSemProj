@@ -35,13 +35,8 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
       
     }
    
-    /*
-    String query = "SELECT * FROM DRONE;";
-    Statement stmt = link.createStatement();
-    ResultSet rs = stmt.executeQuery(query);
-    
-    Statement stmt = link.prepareStatement(query);
     String query = "insert into DRONE(Location, FleetID, SerialNumber, WeightCapacity, VolumeCapacity, WarrantyExpDate, MaxSpeed, ActiveStatus, StockCount, ModelNumber) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    PreparedStatement stmt = link.prepareStatement(query);
     
     stmt.setString(1, newDrone.get("location"));
     stmt.setInt(2, Integer.parseInt(newDrone.get("fleet ID")));
@@ -57,7 +52,7 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
     stmt.setBoolean(8, Boolean.parseBoolean(newDrone.get("active status")));
     stmt.setInt(9, Integer.parseInt(newDrone.get("stock count")));
     stmt.setInt(10, Integer.parseInt(newDrone.get("model number")));
-    */
+    
     
     
     return newDrone;

@@ -4,7 +4,10 @@ import java.util.HashMap;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -62,13 +65,44 @@ class Checkpoint2 {
         }
         return conn;
     }
+    
+    /**
+     * Queries the database and prints the results.
+     * 
+     * @param conn a connection object
+     * @param sql a SQL statement that returns rows
+     * This query is written with the Statement class, tipically 
+     * used for static SQL SELECT statements
+     */
+    public static void sqlQuery(Connection conn, String sql){
+        try {
+        	Statement stmt = conn.createStatement();
+        	ResultSet rs = stmt.executeQuery(sql);
+        	ResultSetMetaData rsmd = rs.getMetaData();
+        	int columnCount = rsmd.getColumnCount();
+        	for (int i = 1; i <= columnCount; i++) {
+        		String value = rsmd.getColumnName(i);
+        		System.out.print(value);
+        		if (i < columnCount) System.out.print(",  ");
+        	}
+			System.out.print("\n");
+        	while (rs.next()) {
+        		for (int i = 1; i <= columnCount; i++) {
+        			String columnValue = rs.getString(i);
+            		System.out.print(columnValue);
+            		if (i < columnCount) System.out.print(",  ");
+        		}
+    			System.out.print("\n");
+        	}
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
   
   public static void main(String[] args) throws SQLException, ParseException {
 	  
 	System.out.println("This is a new run");
   	Connection link = initializeDB("SemesterProject (1).db");
-  	String query = "SELECT * FROM COMMUNITYMEMBER;";
-  	
   	
     Scanner scan = new Scanner(System.in);
     for (int i = 0; i < 100; ++i) {
