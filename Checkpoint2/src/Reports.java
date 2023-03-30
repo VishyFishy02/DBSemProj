@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.ParseException;
@@ -12,7 +13,7 @@ public class Reports {
     
     public static void generateReport(Scanner scan, Connection link) throws SQLException {
 
-        String query;
+        String query = "";
         Statement stmt;
         ResultSet rslt;
         
@@ -31,7 +32,7 @@ public class Reports {
             case 1:
                 System.out.println("Enter a member ID: ");
                 String memID = scan.nextLine();
-                query = "SELECT MemberID, COUNT(*) "
+                query = "SELECT CM.MemberID, COUNT(*) "
                         + "FROM CommunityMember as CM, RentalRequest as R "
                         + "WHERE CM.MemberID = R.MemberID AND CM.MemberID = \'" + memID + "\';";
                 break;
@@ -57,7 +58,7 @@ public class Reports {
                         + "ORDER BY DistanceTraveled DESC, Deliveries DESC;";
                 break;
             case 5:
-                query = "SELECT MemberID, Name, COUNT(RequestNo) "
+                query = "SELECT CM.MemberID, Name, COUNT(RequestNo) "
                         + "FROM CommunityMember as CM, RentalRequest as R, Equipment as E "
                         + "WHERE R.EquipmentID = E.InventoryID AND R.MemberID = CM.MemberID "
                         + "GROUP BY CM.MemberID "
@@ -73,7 +74,7 @@ public class Reports {
                         + " GROUP BY EquipmentType;";
                 break;
              default:
-                  System.out.println("Invalid input.")
+                  System.out.println("Invalid input.");
                   break;
         }
         
@@ -82,9 +83,18 @@ public class Reports {
         ResultSetMetaData rsmd = rslt.getMetaData();
         int columnCount = rsmd.getColumnCount();
         
+        
+        // print column names
+    	for (int i = 1; i <= columnCount; i++) {
+    		String value = rsmd.getColumnName(i);
+    		System.out.print(value);
+    		if (i < columnCount) System.out.print(",  ");
+    	}
+    	System.out.println();
+    	// print vals
         while (rslt.next()) {
             for (int i = 1; i <= columnCount; i++) {
-                String columnValue = rs.getString(i);
+                String columnValue = rslt.getString(i);
                 System.out.print(columnValue);
                 if (i < columnCount) {
                     System.out.print(",  ");

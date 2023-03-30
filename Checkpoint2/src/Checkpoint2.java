@@ -131,6 +131,9 @@ class Checkpoint2 {
 			case 4:
 				editEntity(entityInput, scan, link);
 				break;
+			case 5:
+				Reports.generateReport(scan, link);
+				break;
 			default:
 				System.out.println("INVALID ENTRY");
 				break;
@@ -151,7 +154,7 @@ class Checkpoint2 {
 			warehouseList.add(warehouse);
 			break;
 		case 3:
-			HashMap<String, String> equipment = Equipment.addEquipment(scan);
+			HashMap<String, String> equipment = Equipment.addEquipment(scan, link);
 			equipmentList.add(equipment);
 			break;
 		case 4:
@@ -174,7 +177,7 @@ class Checkpoint2 {
 			break;
 		case 3:
 			// equip
-			Equipment.deleteEquipment(equipmentList, scan);
+			Equipment.deleteEquipment(equipmentList, scan, link);
 			break;
 		case 4:
 			// drone
@@ -191,31 +194,37 @@ class Checkpoint2 {
 		switch (entityInput) {
 		case 1:
 			ResultSet member = Member.searchMember(scan, link);
-			System.out.println(member);
-			// iterate through member and print out its attributes?
-			break;
-		case 2:
-			ResultSet warehouse = Warehouse.searchForWarehouse(warehouseList, scan, link);
-			int columnCount = warehouse.getMetaData().getColumnCount();
+			int columnCount = member.getMetaData().getColumnCount();
 			for (int i = 1; i <= columnCount; i++) {
-				String columnValue = warehouse.getString(i);
+				String columnValue = member.getString(i);
 				System.out.print(columnValue);
 				if (i < columnCount)
 					System.out.print(",  ");
 			}
 			System.out.print("\n");
 			break;
+		case 2:
+			ResultSet warehouse = Warehouse.searchForWarehouse(warehouseList, scan, link);
+			int columnCount2 = warehouse.getMetaData().getColumnCount();
+			for (int i = 1; i <= columnCount2; i++) {
+				String columnValue = warehouse.getString(i);
+				System.out.print(columnValue);
+				if (i < columnCount2)
+					System.out.print(",  ");
+			}
+			System.out.print("\n");
+			break;
 		case 3:
-			HashMap<String, String> equipment = Equipment.searchEquipment(equipmentList, scan);
+			ResultSet equipment = Equipment.searchEquipment(equipmentList, scan, link);
 			System.out.println(equipment);
 			break;
 		case 4:
 			ResultSet drone = Drones.searchDrones(droneList, scan, link);
-			int columnCount2 = drone.getMetaData().getColumnCount();
-			for (int i = 1; i <= columnCount2; i++) {
+			int columnCount4 = drone.getMetaData().getColumnCount();
+			for (int i = 1; i <= columnCount4; i++) {
 				String columnValue = drone.getString(i);
 				System.out.print(columnValue);
-				if (i < columnCount2)
+				if (i < columnCount4)
 					System.out.print(",  ");
 			}
 			System.out.print("\n");
@@ -235,7 +244,7 @@ class Checkpoint2 {
 			Warehouse.editWarehouse(warehouseList, scan, link);
 			break;
 		case 3:
-			Equipment.editEquipment(equipmentList, scan);
+			Equipment.editEquipment(equipmentList, scan, link);
 			break;
 		case 4:
 			Drones.editDrone(droneList, scan, link);

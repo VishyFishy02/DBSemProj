@@ -1,5 +1,7 @@
 /*Member attributes: UserID, Rental History, Warehouse Distance, Active status, Name, Email, Phone, Start Address*/
 
+ 
+
 import java.util.HashMap;
 
 import java.util.Scanner;
@@ -26,134 +28,181 @@ import java.text.ParseException;
 
 import java.text.SimpleDateFormat;
 
-public class Member {
+ 
 
-	public static void createMember(Scanner scan, Connection link) throws SQLException, ParseException {
+public class Member{
 
-		String[] attributes = { "UserID", "Active Status (0 for false, 1 for true)", "Name", "Start Address", "Phone",
-				"Email",
+ 
 
-				"Today's Date", "Warehouse Distance", "Warehouse Address" };
+               public static void createMember(Scanner scan, Connection link) throws SQLException, ParseException {
 
-		String[] inputs = new String[attributes.length];
+      String[] attributes = {"UserID", "Active Status (0 for false, 1 for true)", "Name", "Start Address", "Phone", "Email",
 
-		for (int i = 0; i < inputs.length; i++) {
+                                "Today's Date", "Warehouse Distance", "Warehouse Address"};
 
-			System.out.println("Enter attribute value for " + attributes[i] + ": ");
+   
 
-			inputs[i] = scan.nextLine();
+      String[] inputs = new String[attributes.length];
 
-		}
+     
 
-		String query = "insert into COMMUNITYMEMBER(MemberID, ActiveStatus, Name, Address, PhoneNumber, Email, "
+      for (int i = 0; i < inputs.length; i++) {
 
-				+ "StartDate, WarehouseDistance, WarehouseAddress) "
+                 System.out.println("Enter attribute value for " + attributes[i] + ": ");
 
-				+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                 inputs[i] = scan.nextLine();
+                 if (attributes[i].equals("Email") && inputs[i].indexOf('@') == -1) {
 
-		PreparedStatement stmt = link.prepareStatement(query);
+                     System.out.println("INVALID EMAIL, TRY AGAIN");
 
-		stmt.setInt(1, Integer.parseInt(inputs[0]));
+                     i--;
+                 }
+                 
 
-		stmt.setInt(2, Integer.parseInt(inputs[1]));
+      }
 
-		stmt.setString(3, inputs[2]);
+     
 
-		stmt.setString(4, inputs[3]);
+      String query = "insert into COMMUNITYMEMBER(MemberID, ActiveStatus, Name, Address, PhoneNumber, Email, "
 
-		stmt.setString(5, inputs[4]);
+                              + "StartDate, WarehouseDistance, WarehouseAddress) "
 
-		stmt.setString(6, inputs[5]);
+                              + "values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-		java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(inputs[6]);
+     
 
-		java.sql.Date todaysDate = new java.sql.Date(utilDate.getTime());
+      PreparedStatement stmt = link.prepareStatement(query);
 
-		stmt.setDate(7, todaysDate);
+     
 
-		stmt.setInt(8, Integer.parseInt(inputs[7]));
+      stmt.setInt(1, Integer.parseInt(inputs[0]));
 
-		stmt.setString(9, inputs[8]);
+      stmt.setInt(2, Integer.parseInt(inputs[1]));
 
-		stmt.executeUpdate();
+      stmt.setString(3,  inputs[2]);
 
-		System.out.println("***New member inserted***");
+      stmt.setString(4,  inputs[3]);
 
-	}
+      stmt.setString(5,  inputs[4]);
 
-	public static ResultSet searchMember(Scanner scan, Connection link) throws SQLException {
+      stmt.setString(6,  inputs[5]);
 
-		System.out.println("Enter UserID to search for: ");
+     
 
-		String value = scan.nextLine();
+      java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(inputs[6]);
 
-		String query = "SELECT COMMUNITYMEMBER.MemberID FROM COMMUNITYMEMBER WHERE COMMUNITYMEMBER.MemberID = " + value;
+      java.sql.Date todaysDate = new java.sql.Date(utilDate.getTime());
 
-		PreparedStatement stmt = link.prepareStatement(query);
+      stmt.setDate(7, todaysDate);
 
-		return stmt.executeQuery();
+      stmt.setInt(8,  Integer.parseInt(inputs[7]));
 
-	}
+      stmt.setString(9, inputs[8]);
 
-	public static void editMember(Scanner scan, Connection link) throws SQLException {
+     
 
-		String[] attributes = { "UserID", "Rental History", "Warehouse Distance", "Active Status", "Name", "Email",
-				"Phone", "Start Address" };
+      stmt.executeUpdate();
 
-		ResultSet result = searchMember(scan, link);
+      System.out.println("***New member inserted***");
 
-		if (result == null)
-			System.out.println("INVALID ENTRY");
+  }
 
-		else {
+ 
 
-			int memberID = result.getInt("MemberID");
+  public static ResultSet searchMember(Scanner scan, Connection link) throws SQLException {
 
-			for (int i = 0; i < attributes.length; i++) {
+   
 
-				System.out.println(i + ": " + attributes[i]);
+    System.out.println("Enter UserID to search for: ");
 
-			}
+    String value = scan.nextLine();
 
-			System.out.println("Select the number of the attribute to edit: ");
+ 
 
-			String attr = attributes[Integer.parseInt(scan.nextLine())];
+    String query = "SELECT COMMUNITYMEMBER.MemberID FROM COMMUNITYMEMBER WHERE COMMUNITYMEMBER.MemberID = " + value;
 
-			System.out.println("Enter new value for the attribute: ");
+    PreparedStatement stmt = link.prepareStatement(query);
 
-			String value = scan.nextLine();
+   
 
-			String query = "UPDATE COMMUNITYMEMBER SET " + attr + "= \'" + value
-					+ "\' WHERE COMMUNITYMEMBER.MemberID = "
+    return stmt.executeQuery();
 
-					+ memberID;
+  }
 
-			Statement stmt = link.createStatement();
+ 
 
-			stmt.executeUpdate(query);
+ public static void editMember(Scanner scan, Connection link) throws SQLException {
 
-			System.out.println("***Record successfully edited***");
+               String[] attributes = {"UserID", "Rental History", "Warehouse Distance", "Active Status", "Name", "Email", "Phone", "Start Address"};
 
-		}
+              
 
-	}
+    ResultSet result = searchMember(scan, link);
 
-	public static void removeMember(Scanner scan, Connection link) throws SQLException {
+    if (result == null) System.out.println("INVALID ENTRY");
 
-		ResultSet removeIt = searchMember(scan, link);
+   
 
-		int memberID = removeIt.getInt("MemberID");
+    else {
 
-		if (removeIt != null) {
+               int memberID = result.getInt("MemberID");
 
-			String query = "DELETE FROM COMMUNITYMEMBER WHERE COMMUNITYMEMBER.MemberID = " + memberID;
+        for (int i = 0; i < attributes.length; i++) {
 
-			Statement stmt = link.createStatement();
+            System.out.println(i + ": " + attributes[i]);
 
-			stmt.executeUpdate(query);
+        }
 
-		}
+        System.out.println("Select the number of the attribute to edit: ");
 
-	}
+        String attr = attributes[Integer.parseInt(scan.nextLine())];
+
+       
+
+        System.out.println("Enter new value for the attribute: ");
+
+        String value = scan.nextLine();
+
+       
+
+        String query = "UPDATE COMMUNITYMEMBER SET " + attr + "= \'" + value + "\' WHERE COMMUNITYMEMBER.MemberID = "
+
+                              + memberID;
+
+       
+
+        Statement stmt = link.createStatement();
+
+        stmt.executeUpdate(query);
+
+       
+
+        System.out.println("***Record successfully edited***");
+
+    }
+
+  }
+
+ 
+
+  public static void removeMember(Scanner scan, Connection link) throws SQLException {
+
+   ResultSet removeIt = searchMember(scan, link);
+
+    int memberID = removeIt.getInt("MemberID");
+
+   
+
+    if (removeIt != null) {
+
+        String query = "DELETE FROM COMMUNITYMEMBER WHERE COMMUNITYMEMBER.MemberID = " + memberID;
+
+        Statement stmt = link.createStatement();
+
+        stmt.executeUpdate(query);
+
+    }
+
+  }
 
 }
