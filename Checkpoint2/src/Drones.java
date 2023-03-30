@@ -30,10 +30,6 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
     
     for (String field : droneFields) {
       System.out.println("Enter a value for " + field + ".");
-      
-      if(field.equals("expiration date")) {
-    	  System.out.print(" Please enter in the format yyyy-MM-dd\n");
-      }
       userInput = scan.nextLine();
       newDrone.put(field, userInput);
       
@@ -88,6 +84,7 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
     String query = "UPDATE DRONE SET "+ key +"= \'" + value +"\' WHERE DRONE.SerialNumber = "+ serialNum;
     Statement stmt = link.createStatement();
     stmt.executeUpdate(query);
+    System.out.println("Drone Successfully Updated!");
     
     return drone;
   }
