@@ -119,13 +119,13 @@ class Checkpoint2 {
           addEntity(entityInput, scan, link);
           break;
         case 2:
-          deleteEntity(entityInput, scan);
+          deleteEntity(entityInput, scan, link);
           break;
         case 3:
-          searchEntity(entityInput, scan);
+          searchEntity(entityInput, scan, link);
           break;
         case 4:
-          editEntity(entityInput, scan);
+          editEntity(entityInput, scan, link);
           break;
         default:
           System.out.println("INVALID ENTRY");
@@ -159,7 +159,7 @@ class Checkpoint2 {
     }
   }
 
-  private static void deleteEntity(int entityInput, Scanner scan) {
+  private static void deleteEntity(int entityInput, Scanner scan, Connection link) throws SQLException {
     switch (entityInput) {
       case 1:
         Member.removeMember(scan, memberList);
@@ -173,7 +173,7 @@ class Checkpoint2 {
         break;
       case 4:
         // drone
-        Drones.deleteDrone(droneList, scan);
+        Drones.deleteDrone(droneList, scan, link);
         break;
       default:
         System.out.println("INVALID ENTRY");
@@ -181,7 +181,7 @@ class Checkpoint2 {
     }
   }
 
-  private static void searchEntity(int entityInput, Scanner scan) {
+  private static void searchEntity(int entityInput, Scanner scan, Connection link) throws SQLException {
     // WOMP
     switch (entityInput) {
       case 1:
@@ -198,8 +198,14 @@ class Checkpoint2 {
         System.out.println(equipment);
         break;
       case 4:
-        HashMap<String, String> drone = Drones.searchDrones(droneList, scan);
-        System.out.println(drone);
+        ResultSet drone = Drones.searchDrones(droneList, scan, link);
+        int columnCount = drone.getMetaData().getColumnCount();
+		for (int i = 1; i <= columnCount; i++) {
+			String columnValue = drone.getString(i);
+    		System.out.print(columnValue);
+    		if (i < columnCount) System.out.print(",  ");
+		}
+		System.out.print("\n");
         break;
       default:
         System.out.println("INVALID ENTRY");
@@ -207,7 +213,7 @@ class Checkpoint2 {
     }
   }
 
-  private static void editEntity(int entityInput, Scanner scan) {
+  private static void editEntity(int entityInput, Scanner scan, Connection link) throws SQLException {
     switch (entityInput) {
       case 1:
         Member.editMember(scan, memberList);
@@ -219,7 +225,7 @@ class Checkpoint2 {
         Equipment.editEquipment(equipmentList, scan);
         break;
       case 4:
-        Drones.editDrone(droneList, scan);
+        Drones.editDrone(droneList, scan, link);
         break;
       default:
         System.out.println("INVALID ENTRY");
