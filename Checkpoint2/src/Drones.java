@@ -101,7 +101,6 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
     
     // Remove the drone from the db
     
-    
     String query = "DELETE FROM DRONE Where Drone.SerialNumber = " + serialNum;
     Statement stmt = link.createStatement();
     stmt.executeUpdate(query);
@@ -127,9 +126,10 @@ public static HashMap<String, String> createDrone(Scanner scan, Connection link)
      }
 	*/
 
-     String query = "SELECT Drone.SerialNumber FROM DRONE Where Drone.SerialNumber = " + droneNum;
+     String query = "SELECT * FROM DRONE Where Drone.SerialNumber = " + droneNum;
      Statement stmt = link.createStatement();
      ResultSet rslt = stmt.executeQuery(query);
+     
      return rslt; 
    }
 }
